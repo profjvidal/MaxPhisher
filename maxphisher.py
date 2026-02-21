@@ -308,6 +308,7 @@ argparser.add_argument("-e", "--troubleshoot", help="Troubleshoot a tunneler [De
 argparser.add_argument("--nokey", help="Use localtunnel without ssh key [Default: False]", action="store_false")
 argparser.add_argument("--kshrt", help="Show kshrt url [Default: False]", action="store_true")
 argparser.add_argument("--noupdate", help="Skip update checking [Default : False]", action="store_false")
+argparser.add_argument("--nokill", help="Skip killing services [Default : False]", action="store_false")
 
 
 args = argparser.parse_args()
@@ -327,6 +328,7 @@ mode = args.mode
 troubleshoot = args.troubleshoot
 key = args.nokey if mode != "test" else False
 update = args.noupdate
+kill = args.noupdate
 kshrt = args.kshrt
 
 local_url = f"127.0.0.1:{port}"
@@ -667,7 +669,7 @@ def installer(package, package_name=None):
 def killer():
     # Previous instances of these should be stopped
     for process in processes:
-        if is_running(process):
+        if kill and is_running(process):
             # system(f"killall {process}")
             output = shell(f"pidof {process}", True).stdout.decode("utf-8").strip()
             if " " in output:
@@ -844,7 +846,7 @@ def write_redirect():
             sed("redirectUrl", redirect_url, f"{site_dir}/login.php")
             break
         if redirect_url == "help":
-            sprint(shadow_help)
+            sprint(redir_help)
 
 # Polite Exit
 def pexit():
@@ -970,8 +972,8 @@ def kshrten(url):
     for key in route_map.keys():
         if key in url:
             route = route_map[key]
-            subdomain = url.replace("https://", "").replace(key, "")
-    website = f"https://krshrt.onrender.com/{route}/{subdomain}"
+            link = url.replace("https://", "").replace(key, "")
+    website = f"https://krshrt.onrender.com/{route}/{link}"
     internet()
     try:
         res = post(website, timeout=30).text
@@ -1527,14 +1529,14 @@ def server():
         sleep(1)
     lhr_success = False
     for i in range(10):
-        lhr_url = grep("(https://[-0-9a-z.]*.lhr.(life|pro))", lhr_file)
+        lhr_url = grep("(https://[-0-9a-z.]*.lhr.(life|pro|rocks))", lhr_file)
         if lhr_url != "":
             lhr_success = True
             break
         sleep(1)
     svo_success = False
     for i in range(10):
-        svo_url = grep("(https://[-0-9a-z.]*.serveo.net)", svo_file)
+        svo_url = grep("(https://[-0-9a-z.]*.serveousercontent.com)", svo_file)
         if svo_url != "":
             svo_success = True
             break
