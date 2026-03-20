@@ -72,7 +72,7 @@ OS         | Support Level
 -----------|--------------
 Linux      | Excellent
 Android    | Excellent
-iPhone     | Alpha (Recommended docker)
+iPhone     | Alpha
 MacOS      | Alpha (Recommended docker)
 Windows    | Unsupported (Use docker/virtual-box/vmware)
 BSD        | Never tested
